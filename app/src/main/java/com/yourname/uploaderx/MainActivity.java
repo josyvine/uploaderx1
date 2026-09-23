@@ -40,11 +40,10 @@ public class MainActivity extends Activity {
     private static final int VIDEO_FILE_REQUEST_CODE = 1002;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    // --- CHUNKING-RELATED VARIABLES ---
+    // --- DYNAMIC CHUNKING-RELATED VARIABLES ---
     private InputStream currentChunkingInputStream;
-    private static final int CHUNK_SIZE = 3024 * 3024; // 3MB chunks
-    private byte[] chunkBuffer = new byte[CHUNK_SIZE];
-
+    private int chunkSize = 4 * 1024 * 1024; // Default 4MB (4,194,304 bytes - multiple of 256KB)
+    private byte[] chunkBuffer = new byte[chunkSize];
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -228,7 +227,16 @@ public class MainActivity extends Activity {
         Context mContext;
         WebAppInterface(Context c) { mContext = c; }
 
-        // --- NEW: NATIVELY LOAD ASSET FILES (BYPASSES WEBVIEW CORS) ---
+        // --- DYNAMIC CHUNK SIZE SELECTOR (FROM HTML) ---
+        @JavascriptInterface
+        public void setChunkSize(int mb) {
+            if (mb <= 0) mb = 4;
+            chunkSize = mb * 1024 * 1024;
+            chunkBuffer = new byte[chunkSize];
+            logToTerminal("--> [Android] Upload chunk size set to " + mb + "MB.");
+        }
+
+        // --- NATIVELY LOAD ASSET FILES (BYPASSES WEBVIEW CORS) ---
         @JavascriptInterface
         public String loadAssetFile(String fileName) {
             try {
@@ -338,7 +346,7 @@ public class MainActivity extends Activity {
                         }
 
                         byte[] actualChunk;
-                        if (bytesRead < CHUNK_SIZE) {
+                        if (bytesRead < chunkSize) {
                             actualChunk = Arrays.copyOf(chunkBuffer, bytesRead);
                         } else {
                             actualChunk = chunkBuffer;
