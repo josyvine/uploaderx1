@@ -435,7 +435,12 @@
             await micropip.install(['google-api-python-client', 'google-auth-oauthlib']);
 
             statusEl.textContent = 'Loading automation engine...';
-            const pythonScript = await fetch('./youtube_automator.py').then(res => res.text());
+            
+            // Load the Python script directly from Android assets via native Java interface
+            const pythonScript = Android.loadAssetFile('youtube_automator.py');
+            if (!pythonScript || pythonScript.trim() === "") {
+                throw new Error("Could not load youtube_automator.py from assets. Please ensure the file is present.");
+            }
             
             pyodide.FS.writeFile('youtube_automator.py', pythonScript);
             pyodide.runPython(pythonScript);
@@ -951,8 +956,11 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
             await micropip.install(["google-api-python-client","google-auth-oauthlib"]);
             terminal.write("--> All packages are now up to date.\r\n\r\n");
             
-            terminal.write("--> Reloading local automation engine...\r\n");
-            const script = await fetch('./youtube_automator.py').then(res => res.text());
+            terminal.write("--> Reloading local automation engine from assets...\r\n");
+            const script = Android.loadAssetFile('youtube_automator.py');
+            if (!script || script.trim() === "") {
+                throw new Error("Could not reload youtube_automator.py from assets.");
+            }
             pyodide.FS.writeFile("youtube_automator.py", script);
             // Reload the script in python
             pyodide.runPython("import importlib; import youtube_automator; importlib.reload(youtube_automator); from youtube_automator import *");
