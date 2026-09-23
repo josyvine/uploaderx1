@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light only" />
     <title>UploaderX</title>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;600;700&family=Noto+Sans:wght@400;500;700" />
@@ -15,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/pyodide-http@0.2.1/dist/pyodide-http.js"></script>
 
 <style>
-        html, body { background-color: #f1f5f9; margin:0; padding:0; }
+        html, body { background-color: #f1f5f9; color: #1e293b; margin:0; padding:0; }
         body.terminal-active { background-color: #1e1e1e; }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 4px;}
@@ -938,7 +939,7 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
             terminalView.classList.add('hidden');
             terminalView.classList.remove('flex');
             appContainer.classList.remove('hidden');
-            body.classList.remove('active');
+            body.classList.remove('terminal-active');
             configBtn.classList.add('bg-indigo-600', 'text-white');
             terminalBtn.classList.remove('bg-indigo-600', 'text-white');
         }
