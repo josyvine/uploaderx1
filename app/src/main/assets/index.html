@@ -251,7 +251,22 @@
               </section>
               <section>
                 <h2 class="text-xl font-semibold text-slate-900 mb-4"><span class="text-indigo-600 font-bold">Step 2:</span> Configure Task</h2>
-                <div class="bg-white rounded-xl border border-slate-200 p-5"><div class="max-w-xl"><label for="selected_account" class="block text-sm font-medium text-slate-700 mb-2">Select the account for this upload:</label><select id="selected_account" name="selected_account" class="w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition"></select></div></div>
+                <div class="bg-white rounded-xl border border-slate-200 p-5">
+                  <div class="max-w-xl space-y-4">
+                    <div>
+                      <label for="selected_account" class="block text-sm font-medium text-slate-700 mb-2">Select the account for this upload:</label>
+                      <select id="selected_account" name="selected_account" class="w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition"></select>
+                    </div>
+                    <div>
+                      <label for="upload_speed" class="block text-sm font-medium text-slate-700 mb-2">Upload Speed Profile (Chunk Size):</label>
+                      <select id="upload_speed" onchange="onSpeedProfileChange(this.value)" class="w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition">
+                        <option value="4" selected>4 MB — Mobile Data (Balanced & Stable)</option>
+                        <option value="8">8 MB — High-Speed Wi-Fi / 5G (Max Speed)</option>
+                        <option value="2">2 MB — Low Signal / Data Saver</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </section>
               <section>
                 <h2 class="text-xl font-semibold text-slate-900 mb-4"><span class="text-indigo-600 font-bold">Step 3:</span> Provide Video Details</h2>
@@ -326,6 +341,15 @@
         }
     }
     
+    // --- SPEED PROFILE HANDLER ---
+    function onSpeedProfileChange(mb) {
+        const mbInt = parseInt(mb) || 4;
+        localStorage.setItem('selected_chunk_size', mbInt);
+        if (window.Android && typeof window.Android.setChunkSize === 'function') {
+            window.Android.setChunkSize(mbInt);
+        }
+    }
+
     // --- UPLOAD ORCHESTRATION ---
     let pendingChunkResolve = null;
     let currentTaskCompletionResolver = null;
@@ -461,6 +485,15 @@ class JsTerminalWriter(io.TextIOBase):
 sys.stdout = sys.stderr = JsTerminalWriter()`);
 
             loadAccountsFromStorage();
+
+            // Load and apply saved upload speed profile
+            const savedSpeed = localStorage.getItem('selected_chunk_size') || "4";
+            const speedSelect = document.getElementById('upload_speed');
+            if (speedSelect) {
+                speedSelect.value = savedSpeed;
+                onSpeedProfileChange(savedSpeed);
+            }
+
             bindEventListeners();
             initializeSliderMenu();
 
@@ -514,6 +547,10 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
         if (!pyodide) { logToTerminal('❌ FATAL ERROR: Python engine is not initialized.'); switchTab('terminal'); return; }
         if (!account) { logToTerminal('❌ ERROR: No account was selected.'); switchTab('terminal'); return; }
         if (!account.token) { logToTerminal('❌ ERROR: The selected account is not authorized.'); switchTab('terminal'); return; }
+
+        // Ensure current speed setting is applied to Java before starting
+        const currentSpeed = document.getElementById('upload_speed')?.value || "4";
+        onSpeedProfileChange(currentSpeed);
 
         startBtn.disabled = true;
         startBtn.textContent = 'Upload in Progress...';
