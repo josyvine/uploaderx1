@@ -434,9 +434,8 @@
             const micropip = pyodide.pyimport("micropip");
             await micropip.install(['google-api-python-client', 'google-auth-oauthlib']);
 
-            statusEl.textContent = 'Loading script from GitHub...';
-            const pythonScriptUrl = 'https://raw.githubusercontent.com/josyvine/youtube_automator/main/youtube_automator.py';
-            const pythonScript = await fetch(`${pythonScriptUrl}?cb=${Date.now()}`).then(res => res.text());
+            statusEl.textContent = 'Loading automation engine...';
+            const pythonScript = await fetch('./youtube_automator.py').then(res => res.text());
             
             pyodide.FS.writeFile('youtube_automator.py', pythonScript);
             pyodide.runPython(pythonScript);
@@ -952,13 +951,12 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
             await micropip.install(["google-api-python-client","google-auth-oauthlib"]);
             terminal.write("--> All packages are now up to date.\r\n\r\n");
             
-            terminal.write("--> Checking for updated automation script from GitHub...\r\n");
-            const pythonScriptUrl = 'https://raw.githubusercontent.com/josyvine/youtube_automator/main/youtube_automator.py';
-            const script = await fetch(`${pythonScriptUrl}?cb=${Date.now()}`).then(res => res.text());
+            terminal.write("--> Reloading local automation engine...\r\n");
+            const script = await fetch('./youtube_automator.py').then(res => res.text());
             pyodide.FS.writeFile("youtube_automator.py", script);
             // Reload the script in python
             pyodide.runPython("import importlib; import youtube_automator; importlib.reload(youtube_automator); from youtube_automator import *");
-            terminal.write("--> Automation script updated.\r\n\r\n✅ Update complete.\r\n");
+            terminal.write("--> Automation script reloaded.\r\n\r\n✅ Reload complete.\r\n");
         } catch (error) {
             logToTerminal(`\r\n❌ ERROR during update: ${error}`);
         }
@@ -1034,4 +1032,3 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
 </script>
   </body>
 </html>
-
