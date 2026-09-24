@@ -157,40 +157,20 @@
         <h2 class="text-lg font-semibold text-slate-800 flex-grow text-center mr-10">How to Use UploaderX</h2>
       </div>
       <div class="flex-grow overflow-y-auto p-4 sm:p-6 lg:p-8 text-slate-700 max-w-4xl mx-auto w-full">
-        <h3 class="text-lg font-semibold text-slate-900 mt-6 mb-2">Getting Started: Account Management</h3>
-        <p class="mb-4">The first step is to configure at least one Google Account. You can add multiple accounts to manage different channels.</p>
+        <h3 class="text-lg font-semibold text-slate-900 mt-6 mb-2">Getting Started: Manage Accounts</h3>
+        <p class="mb-4">Configure at least one Google Account. You can add multiple accounts to manage different channels.</p>
         <ul class="list-disc list-inside space-y-2 mb-4">
           <li>Click <code>Add New Account</code> to create a new profile.</li>
           <li>Give the account a memorable <strong>Nickname</strong> (e.g., "Gaming Channel").</li>
-          <li>Click <code>Select client_secrets.json...</code> to provide your credential file from the Google Cloud Console. This is required for the app to identify itself to Google.</li>
-          <li>Once the JSON file is selected, click the <code>Authorize</code> button. This will open a browser for you to sign in and grant the necessary permissions. Follow the on-screen instructions.</li>
-          <li>After successful authorization, the status will change to "Authenticated".</li>
+          <li>Click <code>Select client_secrets.json...</code> or paste your Google Cloud credentials.</li>
+          <li>Click <code>Authorize</code> to sign in and grant permissions.</li>
         </ul>
 
-        <h3 class="text-lg font-semibold text-slate-900 mt-6 mb-2">Configuring an Upload Task</h3>
-        <p class="mb-4">On the main <strong>Config</strong> tab, you prepare the details for your video upload(s).</p>
-        <ul class="list-disc list-inside space-y-2 mb-4">
-          <li><strong>Select Account:</strong> Choose the authorized account you want to upload from.</li>
-          <li><strong>Select Videos:</strong> Click <code>Select Videos...</code> to open the file picker. The videos you choose will appear in the film strip.</li>
-          <li><strong>Title & Description:</strong> Fill in the metadata for your video.</li>
-          <li><strong>Privacy Status:</strong> Choose whether the video should be <code>private</code>, <code>unlisted</code>, or <code>public</code> upon upload.</li>
-        </ul>
+        <h3 class="text-lg font-semibold text-slate-900 mt-6 mb-2">Configure Task</h3>
+        <p class="mb-4">Select the publishing account and set your preferred upload speed profile (4MB or 8MB).</p>
 
-        <h3 class="text-lg font-semibold text-slate-900 mt-6 mb-2">Using the Film Strip & Batch Mode</h3>
-        <p class="mb-4">The film strip allows you to manage multiple videos for batch operations.</p>
-        <ul class="list-disc list-inside space-y-2 mb-4">
-          <li><strong>Single Mode (Default):</strong> Click on a video thumbnail in the film strip to select it for a single upload. The selected video will have a blue border.</li>
-          <li><strong>Batch Mode:</strong> Go to the <strong>Terminal</strong> tab and click the "Batch Mode" button. Now, when you click videos in the film strip, you can select multiple videos (they will have a green border). When you start the upload, each selected video will be processed in its own task window.</li>
-        </ul>
-
-        <h3 class="text-lg font-semibold text-slate-900 mt-6 mb-2">Executing and Monitoring</h3>
-        <p class="mb-4">Once everything is configured, click the <code>Start Upload Process</code> button.</p>
-        <ul class="list-disc list-inside space-y-2 mb-4">
-          <li>The view will automatically switch to the <strong>Terminal</strong> tab.</li>
-          <li>For a single upload, a live log will show the progress.</li>
-          <li>For a batch upload, a grid of task windows will appear, each showing the progress for a specific video.</li>
-          <li>Use the buttons in the terminal header to <code>Test Connection</code> with the YouTube API or to <code>Check for Updates</code> to download the latest version of the automation script.</li>
-        </ul>
+        <h3 class="text-lg font-semibold text-slate-900 mt-6 mb-2">Provide Video Details</h3>
+        <p class="mb-4">Select your video files, fill in metadata, set privacy, and start the upload pipeline.</p>
       </div>
     </div>
 
@@ -199,7 +179,7 @@
         <h2 class="text-xl font-bold text-slate-800">Contact Us</h2>
       </div>
       <div class="flex-grow overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-xl mx-auto w-full">
-        <p class="text-slate-600 mb-6 text-center">Have a question or feedback? Fill out the form below and we'll get back to you.</p>
+        <p class="text-slate-600 mb-6 text-center">Have a question or feedback? Fill out the form below.</p>
         <form id="contact-form" class="space-y-4">
           <div>
             <label for="contact-name" class="block text-sm font-medium text-slate-700 mb-2">Your Name</label>
@@ -222,7 +202,6 @@
     </div>
     <!-- END: Slider Menu, Overlay, and Pages -->
 
-
     <div id="app-container">
       <header class="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 shadow-sm z-50">
         <div class="mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -240,57 +219,132 @@
           </div>
         </div>
       </header>
-      <main class="pt-32 pb-24">
+
+      <main class="pt-28 pb-28">
         <div id="tab-content-config">
-          <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <form id="automation-form" class="space-y-8">
-              <section>
-                <h2 class="text-xl font-semibold text-slate-900 mb-4"><span class="text-indigo-600 font-bold">Step 1:</span> Manage Accounts</h2>
+          <div class="max-w-xl mx-auto px-4">
+            
+            <!-- STEPPER PROGRESS BAR -->
+            <div class="mb-6 pt-2">
+              <div class="flex items-center justify-between relative">
+                <div class="absolute left-6 right-6 top-4 -translate-y-1/2 h-1 bg-slate-200 z-0">
+                  <div id="stepper-progress" class="h-full bg-indigo-600 transition-all duration-300 w-0"></div>
+                </div>
+                
+                <!-- 1. Accounts -->
+                <div class="relative z-10 flex flex-col items-center cursor-pointer" onclick="goToStep(1)">
+                  <div id="step-indicator-1" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-indigo-600 text-white shadow-md ring-4 ring-indigo-100 transition-all">1</div>
+                  <span id="step-label-1" class="text-xs font-semibold text-indigo-600 mt-1.5">Accounts</span>
+                </div>
+
+                <!-- 2. Configure -->
+                <div class="relative z-10 flex flex-col items-center cursor-pointer" onclick="goToStep(2)">
+                  <div id="step-indicator-2" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-white text-slate-400 border-2 border-slate-300 transition-all">2</div>
+                  <span id="step-label-2" class="text-xs font-medium text-slate-400 mt-1.5">Configure</span>
+                </div>
+
+                <!-- 3. Details -->
+                <div class="relative z-10 flex flex-col items-center cursor-pointer" onclick="goToStep(3)">
+                  <div id="step-indicator-3" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-white text-slate-400 border-2 border-slate-300 transition-all">3</div>
+                  <span id="step-label-3" class="text-xs font-medium text-slate-400 mt-1.5">Details</span>
+                </div>
+              </div>
+            </div>
+
+            <form id="automation-form">
+              
+              <!-- PAGE 1: MANAGE ACCOUNTS -->
+              <section id="step-page-1" class="space-y-4">
+                <div>
+                  <h2 class="text-xl font-bold text-slate-800">Manage Accounts</h2>
+                  <p class="text-xs text-slate-500 mt-1">Configure and authorize your YouTube channels.</p>
+                </div>
                 <div id="accounts-container" class="space-y-4"></div>
-                <button type="button" onclick="addAccount()" class="mt-4 flex items-center gap-2 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-sm font-medium rounded-lg transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path></svg>Add New Account</button>
+                <button type="button" onclick="addAccount()" class="w-full flex items-center justify-center gap-2 p-3 bg-white border border-indigo-200 hover:bg-indigo-50 text-indigo-600 text-sm font-semibold rounded-xl transition-all shadow-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path></svg>
+                  Add New Account
+                </button>
               </section>
-              <section>
-                <h2 class="text-xl font-semibold text-slate-900 mb-4"><span class="text-indigo-600 font-bold">Step 2:</span> Configure Task</h2>
-                <div class="bg-white rounded-xl border border-slate-200 p-5">
-                  <div class="max-w-xl space-y-4">
-                    <div>
-                      <label for="selected_account" class="block text-sm font-medium text-slate-700 mb-2">Select the account for this upload:</label>
-                      <select id="selected_account" name="selected_account" class="w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition"></select>
-                    </div>
-                    <div>
-                      <label for="upload_speed" class="block text-sm font-medium text-slate-700 mb-2">Upload Speed Profile (Chunk Size):</label>
-                      <select id="upload_speed" onchange="onSpeedProfileChange(this.value)" class="w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition">
-                        <option value="4" selected>4 MB — Mobile Data (Balanced & Stable)</option>
-                        <option value="8">8 MB — High-Speed Wi-Fi / 5G (Max Speed)</option>
-                        <option value="2">2 MB — Low Signal / Data Saver</option>
-                      </select>
-                    </div>
+
+              <!-- PAGE 2: CONFIGURE TASK -->
+              <section id="step-page-2" class="hidden space-y-4">
+                <div>
+                  <h2 class="text-xl font-bold text-slate-800">Configure Task</h2>
+                  <p class="text-xs text-slate-500 mt-1">Choose the active account and transmission speed profile.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-5 space-y-4 shadow-sm">
+                  <div>
+                    <label for="selected_account" class="block text-sm font-medium text-slate-700 mb-2">Publishing Account</label>
+                    <select id="selected_account" name="selected_account" class="w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition"></select>
+                  </div>
+                  <div>
+                    <label for="upload_speed" class="block text-sm font-medium text-slate-700 mb-2">Upload Speed Profile (Chunk Size)</label>
+                    <select id="upload_speed" onchange="onSpeedProfileChange(this.value)" class="w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition">
+                      <option value="4" selected>4 MB — Mobile Data (Balanced & Stable)</option>
+                      <option value="8">8 MB — High-Speed Wi-Fi / 5G (Maximum Speed)</option>
+                      <option value="2">2 MB — Low Signal / Data Saver</option>
+                    </select>
                   </div>
                 </div>
               </section>
-              <section>
-                <h2 class="text-xl font-semibold text-slate-900 mb-4"><span class="text-indigo-600 font-bold">Step 3:</span> Provide Video Details</h2>
-                <div class="bg-white rounded-xl border border-slate-200 p-5">
-                  <div class="max-w-xl space-y-4">
-                    <div>
-                      <label class="block text-sm font-medium text-slate-700 mb-2">Video Files</label>
-                      <button type="button" onclick="Android.selectVideoFile('onVideosSelected')" class="w-full text-left p-3 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 mb-3"><span id="video-file-name">Select Videos...</span></button>
-                      <div id="film-strip-container"></div>
-                    </div>
-                    <div><label for="video_title" class="block text-sm font-medium text-slate-700 mb-2">Title</label><input type="text" id="video_title" name="video_title" placeholder="A compelling title for your video" class="form-input w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition" /></div>
-                    <div><label for="video_description" class="block text-sm font-medium text-slate-700 mb-2">Description</label><textarea id="video_description" name="video_description" placeholder="A detailed description of the video content..." class="form-input w-full rounded-lg border-slate-300 p-3 text-sm min-h-[120px] focus:border-indigo-500 focus:ring-indigo-500 transition"></textarea></div>
-                    <div><label for="video_privacy" class="block text-sm font-medium text-slate-700 mb-2">Privacy Status</label><select id="video_privacy" name="video_privacy" class="form-input w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition"><option value="private" selected>Private</option><option value="unlisted">Unlisted</option><option value="public">Public</option></select></div>
+
+              <!-- PAGE 3: VIDEO DETAILS -->
+              <section id="step-page-3" class="hidden space-y-4">
+                <div>
+                  <h2 class="text-xl font-bold text-slate-800">Video Details</h2>
+                  <p class="text-xs text-slate-500 mt-1">Select media from device and set video information.</p>
+                </div>
+                <div class="bg-white rounded-xl border border-slate-200 p-5 space-y-4 shadow-sm">
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Video Files</label>
+                    <button type="button" onclick="Android.selectVideoFile('onVideosSelected')" class="w-full text-left p-3 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 mb-3 transition"><span id="video-file-name">Select Videos...</span></button>
+                    <div id="film-strip-container"></div>
+                  </div>
+                  <div>
+                    <label for="video_title" class="block text-sm font-medium text-slate-700 mb-2">Title</label>
+                    <input type="text" id="video_title" name="video_title" placeholder="A compelling title for your video" class="form-input w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition" />
+                  </div>
+                  <div>
+                    <label for="video_description" class="block text-sm font-medium text-slate-700 mb-2">Description</label>
+                    <textarea id="video_description" name="video_description" placeholder="A detailed description of the video content..." class="form-input w-full rounded-lg border-slate-300 p-3 text-sm min-h-[100px] focus:border-indigo-500 focus:ring-indigo-500 transition"></textarea>
+                  </div>
+                  <div>
+                    <label for="video_privacy" class="block text-sm font-medium text-slate-700 mb-2">Privacy Status</label>
+                    <select id="video_privacy" name="video_privacy" class="form-input w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition">
+                      <option value="private" selected>Private</option>
+                      <option value="unlisted">Unlisted</option>
+                      <option value="public">Public</option>
+                    </select>
                   </div>
                 </div>
               </section>
+
             </form>
           </div>
         </div>
       </main>
-      <footer class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-slate-200 p-3 z-50">
-        <div class="max-w-4xl mx-auto"><button id="start-automation-btn" type="button" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 shadow-lg shadow-indigo-500/20">Start Upload Process</button></div>
+
+      <!-- NAVIGATION FOOTER -->
+      <footer class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-slate-200 p-3 z-50">
+        <div class="max-w-xl mx-auto flex items-center gap-3">
+          <button id="wizard-prev-btn" type="button" onclick="goToStep(currentStep - 1)" class="hidden w-1/3 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition-all text-sm flex items-center justify-center gap-1 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"></path></svg>
+            Previous
+          </button>
+          
+          <button id="wizard-next-btn" type="button" onclick="goToStep(currentStep + 1)" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all text-sm shadow-md shadow-indigo-500/20 flex items-center justify-center gap-1">
+            <span>Next: Configure Task</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg>
+          </button>
+
+          <button id="start-automation-btn" type="button" class="hidden w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors duration-200 shadow-md shadow-indigo-500/20 text-sm">
+            Start Upload Process
+          </button>
+        </div>
       </footer>
     </div>
+
+    <!-- TERMINAL VIEW -->
     <div id="terminal-view" class="fixed inset-0 bg-[#1e1e1e] z-[60] hidden flex-col">
       <div class="flex-shrink-0 bg-slate-700 p-2 text-white font-mono text-sm flex justify-between items-center">
         <span class="ml-2">AUTOMATION LOG</span>
@@ -320,6 +374,65 @@
     let currentAccountIdForJson = null;
     let selectedVideos = [];
     let isBatchMode = false;
+    let currentStep = 1;
+
+    // --- STEP WIZARD NAVIGATION ---
+    function goToStep(step) {
+        if (step < 1 || step > 3) return;
+        currentStep = step;
+
+        document.getElementById('step-page-1').classList.toggle('hidden', currentStep !== 1);
+        document.getElementById('step-page-2').classList.toggle('hidden', currentStep !== 2);
+        document.getElementById('step-page-3').classList.toggle('hidden', currentStep !== 3);
+
+        const progress = document.getElementById('stepper-progress');
+        if (progress) {
+            progress.style.width = currentStep === 1 ? '0%' : currentStep === 2 ? '50%' : '100%';
+        }
+
+        for (let i = 1; i <= 3; i++) {
+            const ind = document.getElementById(`step-indicator-${i}`);
+            const lbl = document.getElementById(`step-label-${i}`);
+            if (!ind || !lbl) continue;
+            if (i < currentStep) {
+                ind.className = 'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-green-500 text-white shadow-sm transition-all';
+                ind.innerHTML = '✓';
+                lbl.className = 'text-xs font-medium text-green-600 mt-1.5';
+            } else if (i === currentStep) {
+                ind.className = 'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-indigo-600 text-white shadow-md ring-4 ring-indigo-100 transition-all';
+                ind.innerHTML = i;
+                lbl.className = 'text-xs font-semibold text-indigo-600 mt-1.5';
+            } else {
+                ind.className = 'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-white text-slate-400 border-2 border-slate-300 transition-all';
+                ind.innerHTML = i;
+                lbl.className = 'text-xs font-medium text-slate-400 mt-1.5';
+            }
+        }
+
+        const prevBtn = document.getElementById('wizard-prev-btn');
+        const nextBtn = document.getElementById('wizard-next-btn');
+        const startBtn = document.getElementById('start-automation-btn');
+
+        if (currentStep === 1) {
+            prevBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+            nextBtn.className = 'w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all text-sm shadow-md shadow-indigo-500/20 flex items-center justify-center gap-1';
+            nextBtn.innerHTML = '<span>Next: Configure Task</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg>';
+            startBtn.classList.add('hidden');
+        } else if (currentStep === 2) {
+            prevBtn.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+            nextBtn.className = 'w-2/3 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all text-sm shadow-md shadow-indigo-500/20 flex items-center justify-center gap-1';
+            nextBtn.innerHTML = '<span>Next: Video Details</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg>';
+            startBtn.classList.add('hidden');
+        } else if (currentStep === 3) {
+            prevBtn.classList.remove('hidden');
+            nextBtn.classList.add('hidden');
+            startBtn.classList.remove('hidden');
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     // --- NATIVE AND PYTHON COMMUNICATION ---
     let pendingAuthResolve = null;
@@ -383,31 +496,26 @@
             const authTokenJson = JSON.stringify(account.token);
             const detailsJson = JSON.stringify(details);
 
-            // 1. Initiate Session with Google via Python
             await initiate_py(taskId, authTokenJson, detailsJson, mimeType, fileSize);
             
             let lastLogTime = 0;
 
-            // 2. Loop and Stream Chunks
             while (true) {
                 const chunk = await getNextChunk(taskId);
-                if (!chunk) { // Empty chunk signifies end of file
+                if (!chunk) { 
                     break; 
                 }
                 
-                // Immediately send the chunk to Python for uploading
                 await upload_chunk_py(taskId, chunk);
 
                 const percent = pyodide.globals.get('upload_sessions').get(taskId).get_progress_percent();
                 
-                // Throttle logging to prevent UI lag
                 if (Date.now() - lastLogTime > 250) {
                     logToTaskWindow(taskId, `--> [JS] Uploading to Google... ${percent.toFixed(1)}%`);
                     lastLogTime = Date.now();
                 }
             }
             
-            // 3. Finalize the upload
             logToTaskWindow(taskId, "--> [JS] All chunks sent. Finalizing with YouTube...");
             await finalize_py(taskId);
 
@@ -415,7 +523,6 @@
             logToTaskWindow(taskId, `❌ FATAL JS ERROR during chunk processing: ${e.message}`);
         } finally {
             Android.endChunking();
-            // Signal that this task is complete, allowing the batch queue to proceed
             if (currentTaskCompletionResolver) {
                 currentTaskCompletionResolver();
                 currentTaskCompletionResolver = null;
@@ -423,12 +530,10 @@
         }
     }
 
-
     function logFromNative(message) {
         logToTerminal(message.replace(/\n/g, '\r\n'));
     }
 
-    // --- TERMINAL LOGGING ---
     function logToTerminal(message) {
         if (terminal && terminal.element) {
             terminal.write(message.replace(/\n/g, '\r\n') + '\r\n');
@@ -463,7 +568,6 @@
 
             statusEl.textContent = 'Loading automation engine...';
             
-            // Load the Python script directly from Android assets via native Java interface
             const pythonScript = Android.loadAssetFile('youtube_automator.py');
             if (!pythonScript || pythonScript.trim() === "") {
                 throw new Error("Could not load youtube_automator.py from assets. Please ensure the file is present.");
@@ -486,7 +590,6 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
 
             loadAccountsFromStorage();
 
-            // Load and apply saved upload speed profile
             const savedSpeed = localStorage.getItem('selected_chunk_size') || "4";
             const speedSelect = document.getElementById('upload_speed');
             if (speedSelect) {
@@ -496,6 +599,7 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
 
             bindEventListeners();
             initializeSliderMenu();
+            goToStep(1);
 
             document.getElementById('loading-overlay').classList.add('opacity-0', 'pointer-events-none');
         } catch (error) {
@@ -548,7 +652,6 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
         if (!account) { logToTerminal('❌ ERROR: No account was selected.'); switchTab('terminal'); return; }
         if (!account.token) { logToTerminal('❌ ERROR: The selected account is not authorized.'); switchTab('terminal'); return; }
 
-        // Ensure current speed setting is applied to Java before starting
         const currentSpeed = document.getElementById('upload_speed')?.value || "4";
         onSpeedProfileChange(currentSpeed);
 
@@ -613,7 +716,6 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
         const grid = document.getElementById('batch-terminal-grid');
         const videoQueue = [...videos];
 
-        // First, create all the UI windows
         videoQueue.forEach((video, index) => {
             const taskId = `task_${index}`;
             const taskWindow = document.createElement('div');
@@ -625,7 +727,6 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
             grid.appendChild(taskWindow);
         });
 
-        // Now, process the queue sequentially
         for (const [index, video] of videoQueue.entries()) {
             const taskId = `task_${index}`;
             logToTaskWindow(taskId, `--- Starting Task ${index + 1} of ${videoQueue.length} ---`);
@@ -639,7 +740,6 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
         }
     }
 
-    // --- FILM STRIP UI LOGIC (Unchanged) ---
     function renderFilmStrip() {
         const container = document.getElementById('film-strip-container');
         container.innerHTML = '';
@@ -687,7 +787,6 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
         renderFilmStrip();
     }
 
-    // --- ACCOUNT MANAGEMENT ---
     function selectJsonForAccount(accountId) {
         currentAccountIdForJson = accountId;
         Android.selectJsonFile('handleJsonFile');
@@ -700,7 +799,6 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
             try {
                 const jsonString = atob(base64Data);
                 textarea.value = jsonString;
-                // Trigger the oninput handler to process and save the new content
                 textarea.dispatchEvent(new Event('input', { bubbles: true }));
             } catch (e) {
                 console.error("Error decoding base64 from file:", e);
@@ -763,18 +861,18 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
 
         const container = document.getElementById("accounts-container");
         const div = document.createElement("div");
-        div.className = "account-set bg-white rounded-xl border border-slate-200 p-5";
+        div.className = "account-set bg-white rounded-xl border border-slate-200 p-5 shadow-sm";
         div.id = newAccount.id;
         div.innerHTML = `<div class="space-y-4 max-w-xl">
             <div class="flex justify-between items-start">
-                <div>
-                    <label for="account_nickname_${accountId}" class="block text-base font-medium text-slate-700 mb-2">Account Nickname</label>
-                    <input type="text" id="account_nickname_${accountId}" placeholder="e.g., My Gaming Channel" name="account_nicknames[]" oninput="updateAccountNickname('${newAccount.id}', this.value)" class="form-input w-full rounded-lg border-slate-300 p-3 text-sm" value="${newAccount.nickname}">
+                <div class="flex-grow">
+                    <label for="account_nickname_${accountId}" class="block text-sm font-semibold text-slate-700 mb-2">Account Nickname</label>
+                    <input type="text" id="account_nickname_${accountId}" placeholder="e.g., My Gaming Channel" name="account_nicknames[]" oninput="updateAccountNickname('${newAccount.id}', this.value)" class="form-input w-full rounded-lg border-slate-300 p-3 text-sm focus:border-indigo-500 focus:ring-indigo-500 transition" value="${newAccount.nickname}">
                 </div>
-                <button type="button" class="text-slate-400 hover:text-red-600 mt-10 ml-4" onclick="removeAccount('${newAccount.id}')" title="Remove Account"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192Z"></path></svg></button>
+                <button type="button" class="text-slate-400 hover:text-red-600 mt-8 ml-3 p-2 rounded-lg hover:bg-slate-50 transition" onclick="removeAccount('${newAccount.id}')" title="Remove Account"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192Z"></path></svg></button>
             </div>
             <div>
-                <label for="json_textarea_${accountId}" class="block text-sm font-medium text-slate-700 mb-2">Google Cloud Credentials</label>
+                <label for="json_textarea_${accountId}" class="block text-sm font-semibold text-slate-700 mb-2">Google Cloud Credentials</label>
                 <div class="relative">
                     <textarea 
                         id="json_textarea_${accountId}" 
@@ -796,7 +894,6 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
         </div>`;
         container.appendChild(div);
 
-        // Run initial validation on the textarea content when the account card is loaded
         const textarea = div.querySelector(`#json_textarea_${accountId}`);
         if(textarea) {
             textarea.dispatchEvent(new Event('input', { bubbles: true }));
@@ -1002,7 +1099,6 @@ sys.stdout = sys.stderr = JsTerminalWriter()`);
                 throw new Error("Could not reload youtube_automator.py from assets.");
             }
             pyodide.FS.writeFile("youtube_automator.py", script);
-            // Reload the script in python
             pyodide.runPython("import importlib; import youtube_automator; importlib.reload(youtube_automator); from youtube_automator import *");
             terminal.write("--> Automation script reloaded.\r\n\r\n✅ Reload complete.\r\n");
         } catch (error) {
