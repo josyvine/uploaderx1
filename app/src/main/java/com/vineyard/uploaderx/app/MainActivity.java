@@ -255,11 +255,14 @@ public class MainActivity extends Activity {
             }
         }
 
+        // --- FIXED: ALLOWS ALL MIME TYPES SO client_secrets.json IS NEVER GREYED OUT ---
         @JavascriptInterface
         public void selectJsonFile(String callback) {
             currentFileCallback = callback;
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("application/json");
+            intent.setType("*/*");
+            String[] mimetypes = {"application/json", "text/plain", "application/octet-stream", "*/*"};
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             startActivityForResult(intent, JSON_FILE_REQUEST_CODE);
         }
